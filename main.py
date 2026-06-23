@@ -32,8 +32,8 @@ def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
     # حقول أسماء الفرق
-    team1_name = ft.TextField(label="الفريق الأول", value="", text_align=ft.TextAlign.CENTER, rtl=True, expand=True, border_color=ft.Colors.BLUE, color=ft.Colors.BLUE, border_radius=10, dense=True, content_padding=10, text_style=ft.TextStyle(weight=ft.FontWeight.BOLD))
-    team2_name = ft.TextField(label="الفريق الثاني", value="", text_align=ft.TextAlign.CENTER, rtl=True, expand=True, border_color=ft.Colors.RED, color=ft.Colors.RED, border_radius=10, dense=True, content_padding=10, text_style=ft.TextStyle(weight=ft.FontWeight.BOLD))
+    team1_name = ft.TextField(label="الفريق الأول", value="", text_align=ft.TextAlign.CENTER, rtl=True, expand=True, border_color=ft.Colors.BLUE, bgcolor=ft.Colors.BLUE_100, color=ft.Colors.BLUE_900, border_radius=10, dense=True, content_padding=10, text_style=ft.TextStyle(weight=ft.FontWeight.BOLD))
+    team2_name = ft.TextField(label="الفريق الثاني", value="", text_align=ft.TextAlign.CENTER, rtl=True, expand=True, border_color=ft.Colors.RED, bgcolor=ft.Colors.RED_100, color=ft.Colors.RED_900, border_radius=10, dense=True, content_padding=10, text_style=ft.TextStyle(weight=ft.FontWeight.BOLD))
 
     # فلتر إدخال الأرقام وعلامة السالب فقط
     rounds_filter = ft.InputFilter(allow=True, regex_string=r"^-?[0-9]*", replacement_string="")
@@ -100,20 +100,26 @@ def main(page: ft.Page):
         if t1_sum < t2_sum:
             winner_field.value = n1
             winner_field.color = team1_name.color
+            winner_field.bgcolor = team1_name.bgcolor
             winner_field.border_color = team1_name.border_color
             diff_field.color = team1_name.color
+            diff_field.bgcolor = team1_name.bgcolor
             diff_field.border_color = team1_name.border_color
         elif t2_sum < t1_sum:
             winner_field.value = n2
             winner_field.color = team2_name.color
+            winner_field.bgcolor = team2_name.bgcolor
             winner_field.border_color = team2_name.border_color
             diff_field.color = team2_name.color
+            diff_field.bgcolor = team2_name.bgcolor
             diff_field.border_color = team2_name.border_color
         else:
             winner_field.value = "تعادل"
             winner_field.color = ft.Colors.BLACK
+            winner_field.bgcolor = None
             winner_field.border_color = None
             diff_field.color = ft.Colors.BLACK
+            diff_field.bgcolor = None
             diff_field.border_color = None
             
         winner_field.update()
