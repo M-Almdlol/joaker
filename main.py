@@ -32,20 +32,23 @@ def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
     # حقول أسماء الفرق
-    team1_name = ft.TextField(label="الفريق الأول", value="", text_align=ft.TextAlign.CENTER, rtl=True, expand=True, border_color=ft.Colors.BLUE, border_radius=10)
-    team2_name = ft.TextField(label="الفريق الثاني", value="", text_align=ft.TextAlign.CENTER, rtl=True, expand=True, border_color=ft.Colors.BLUE, border_radius=10)
+    team1_name = ft.TextField(label="الفريق الأول", value="", text_align=ft.TextAlign.CENTER, rtl=True, expand=True, border_color=ft.Colors.BLUE, color=ft.Colors.BLUE, border_radius=10, dense=True, content_padding=10, text_style=ft.TextStyle(weight=ft.FontWeight.BOLD))
+    team2_name = ft.TextField(label="الفريق الثاني", value="", text_align=ft.TextAlign.CENTER, rtl=True, expand=True, border_color=ft.Colors.RED, color=ft.Colors.RED, border_radius=10, dense=True, content_padding=10, text_style=ft.TextStyle(weight=ft.FontWeight.BOLD))
+
+    # فلتر إدخال الأرقام وعلامة السالب فقط
+    rounds_filter = ft.InputFilter(allow=True, regex_string=r"^-?[0-9]*", replacement_string="")
 
     # جولات الفريقين
-    t1_rounds = [ft.TextField(label=f"الجولة {i+1}", value="", text_align=ft.TextAlign.CENTER, rtl=True, keyboard_type=ft.KeyboardType.NUMBER, border_radius=10) for i in range(5)]
-    t2_rounds = [ft.TextField(label=f"الجولة {i+1}", value="", text_align=ft.TextAlign.CENTER, rtl=True, keyboard_type=ft.KeyboardType.NUMBER, border_radius=10) for i in range(5)]
+    t1_rounds = [ft.TextField(label=f"الجولة {i+1}", value="", text_align=ft.TextAlign.CENTER, rtl=True, keyboard_type=ft.KeyboardType.NUMBER, input_filter=rounds_filter, border_radius=10, dense=True, content_padding=10) for i in range(5)]
+    t2_rounds = [ft.TextField(label=f"الجولة {i+1}", value="", text_align=ft.TextAlign.CENTER, rtl=True, keyboard_type=ft.KeyboardType.NUMBER, input_filter=rounds_filter, border_radius=10, dense=True, content_padding=10) for i in range(5)]
 
     # مجاميع الفرق
-    t1_total = ft.TextField(label="المجموع", value="0", text_align=ft.TextAlign.CENTER, rtl=True, read_only=True, border_color=ft.Colors.GREEN, border_radius=10, text_style=ft.TextStyle(weight=ft.FontWeight.BOLD))
-    t2_total = ft.TextField(label="المجموع", value="0", text_align=ft.TextAlign.CENTER, rtl=True, read_only=True, border_color=ft.Colors.GREEN, border_radius=10, text_style=ft.TextStyle(weight=ft.FontWeight.BOLD))
+    t1_total = ft.TextField(label="المجموع", value="0", text_align=ft.TextAlign.CENTER, rtl=True, read_only=True, border_color=ft.Colors.GREEN, border_radius=10, dense=True, content_padding=10, text_style=ft.TextStyle(weight=ft.FontWeight.BOLD))
+    t2_total = ft.TextField(label="المجموع", value="0", text_align=ft.TextAlign.CENTER, rtl=True, read_only=True, border_color=ft.Colors.GREEN, border_radius=10, dense=True, content_padding=10, text_style=ft.TextStyle(weight=ft.FontWeight.BOLD))
 
     # حقول إضافية للفارق والفائز
-    diff_field = ft.TextField(label="فارق النقاط", value="0", text_align=ft.TextAlign.CENTER, rtl=True, read_only=True, border_radius=10, expand=True)
-    winner_field = ft.TextField(label="الفريق المنتصر", value="لا يوجد فائز", text_align=ft.TextAlign.CENTER, rtl=True, read_only=True, border_radius=10, expand=True)
+    diff_field = ft.TextField(label="فارق النقاط", value="0", text_align=ft.TextAlign.CENTER, rtl=True, read_only=True, border_radius=10, expand=True, dense=True, content_padding=10, text_style=ft.TextStyle(weight=ft.FontWeight.BOLD))
+    winner_field = ft.TextField(label="الفريق المنتصر", value="لا يوجد فائز", text_align=ft.TextAlign.CENTER, rtl=True, read_only=True, border_radius=10, expand=True, dense=True, content_padding=10, text_style=ft.TextStyle(weight=ft.FontWeight.BOLD))
 
     def save_state():
         conn = sqlite3.connect('game_data.db')
@@ -96,12 +99,25 @@ def main(page: ft.Page):
 
         if t1_sum > t2_sum:
             winner_field.value = n1
+            winner_field.color = team1_name.color
+            winner_field.border_color = team1_name.border_color
+            diff_field.color = team1_name.color
+            diff_field.border_color = team1_name.border_color
         elif t2_sum > t1_sum:
             winner_field.value = n2
+            winner_field.color = team2_name.color
+            winner_field.border_color = team2_name.border_color
+            diff_field.color = team2_name.color
+            diff_field.border_color = team2_name.border_color
         else:
             winner_field.value = "تعادل"
+            winner_field.color = ft.Colors.BLACK
+            winner_field.border_color = None
+            diff_field.color = ft.Colors.BLACK
+            diff_field.border_color = None
             
         winner_field.update()
+        diff_field.update()
         save_state()
 
     # ربط الأحداث
@@ -232,24 +248,24 @@ def main(page: ft.Page):
         elevation=8,
         shape=ft.RoundedRectangleBorder(radius=20),
         content=ft.Container(
-            padding=25,
+            padding=15,
             content=ft.Column([
                 # أسماء الفرق
                 ft.Row([team1_name, team2_name], alignment=ft.MainAxisAlignment.CENTER, rtl=True),
-                ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
+                ft.Divider(height=10, color=ft.Colors.TRANSPARENT),
                 
                 # إدخال الجولات والمجاميع
                 ft.Row([
-                    ft.Column(t1_rounds + [ft.Divider(), t1_total], expand=True, alignment=ft.MainAxisAlignment.CENTER),
-                    ft.Container(width=1, bgcolor=ft.Colors.GREY_300, height=350, margin=ft.margin.symmetric(horizontal=10)), # فاصل رأسي
-                    ft.Column(t2_rounds + [ft.Divider(), t2_total], expand=True, alignment=ft.MainAxisAlignment.CENTER),
+                    ft.Column(t1_rounds + [ft.Divider(height=10), t1_total], expand=True, alignment=ft.MainAxisAlignment.CENTER, spacing=5),
+                    ft.Container(width=1, bgcolor=ft.Colors.GREY_300, height=280, margin=ft.margin.symmetric(horizontal=5)), # فاصل رأسي
+                    ft.Column(t2_rounds + [ft.Divider(height=10), t2_total], expand=True, alignment=ft.MainAxisAlignment.CENTER, spacing=5),
                 ], alignment=ft.MainAxisAlignment.CENTER, rtl=True),
                 
-                ft.Divider(height=30, color=ft.Colors.GREY_300),
+                ft.Divider(height=20, color=ft.Colors.GREY_300),
                 
                 # الفائز والفارق
                 ft.Row([winner_field, diff_field], alignment=ft.MainAxisAlignment.CENTER, rtl=True),
-                ft.Container(height=15),
+                ft.Container(height=5),
                 
                 # زر إنهاء وحفظ اللعبة
                 ft.ElevatedButton(
@@ -262,10 +278,10 @@ def main(page: ft.Page):
                         bgcolor=ft.Colors.GREEN_600,
                         color="white",
                         shape=ft.RoundedRectangleBorder(radius=10),
-                        padding=15
+                        padding=10
                     ),
                 )
-            ], rtl=True)
+            ], rtl=True, spacing=5)
         )
     )
 
