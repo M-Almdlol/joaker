@@ -97,13 +97,13 @@ def main(page: ft.Page):
         n1 = (team1_name.value or "").strip() or "الفريق الأول"
         n2 = (team2_name.value or "").strip() or "الفريق الثاني"
 
-        if t1_sum > t2_sum:
+        if t1_sum < t2_sum:
             winner_field.value = n1
             winner_field.color = team1_name.color
             winner_field.border_color = team1_name.border_color
             diff_field.color = team1_name.color
             diff_field.border_color = team1_name.border_color
-        elif t2_sum > t1_sum:
+        elif t2_sum < t1_sum:
             winner_field.value = n2
             winner_field.color = team2_name.color
             winner_field.border_color = team2_name.border_color
