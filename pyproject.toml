@@ -1,0 +1,6 @@
+[tool.flet]
+app_name = "joaker"
+app_display_name = "جواكر"
+app_version = "1.0.0"
+app_bundle_id = "com.joaker.app"
+description = "لوحة نتائج جواكر"
